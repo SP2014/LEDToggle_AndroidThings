@@ -14,9 +14,9 @@ import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    //Pin for raspberry pi
     Gpio ledPin;
-    String pinName="BCM4";
+    String pinName="BCM4"; //using pin BCM4
     ToggleButton ledButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +28,12 @@ public class MainActivity extends AppCompatActivity {
 
     void initial(){
         ledButton= (ToggleButton) findViewById(R.id.LEDtoggleButton);
-        PeripheralManagerService service = new PeripheralManagerService();
+        PeripheralManagerService service = new PeripheralManagerService(); //connecting to io service of raspberry pi
         try {
 
 
-         ledPin=service.openGpio(pinName);
-         ledPin.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
+         ledPin=service.openGpio(pinName); //connecting to pin
+         ledPin.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW); //setting the pin to low in first attempt
             ledOnOff();
 
         } catch (IOException e) {
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         ledButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ledButton.isChecked()) {
+                if (ledButton.isChecked()) { //toggle button
                     try {
-                        ledPin.setValue(!ledPin.getValue());
+                        ledPin.setValue(!ledPin.getValue()); //getting the value of pin high or low and making it inverse
                     Toast.makeText(MainActivity.this,"LED ON", Toast.LENGTH_SHORT).show();}
                     catch (IOException e){
                             Log.e("LedToggle", "Error on PeripheralIO API", e);}
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.i("LedToggle", "Closing LED GPIO pin");
         try {
-            ledPin.close();
+            ledPin.close(); //when the application closes it also cloases connection to the pin
         } catch (IOException e) {
             Log.e("LedToggle", "Error on PeripheralIO API", e);
         } finally {
