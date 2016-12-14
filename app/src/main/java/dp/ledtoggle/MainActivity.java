@@ -11,7 +11,8 @@ import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    Gpio ledPin;
+    String pinName="BCM4";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,12 +22,27 @@ public class MainActivity extends AppCompatActivity {
     void initial(){
         PeripheralManagerService service = new PeripheralManagerService();
         try {
-         String pinName="BCM21";
-         Gpio ledPin=service.openGpio(pinName);
+
+         ledPin=service.openGpio(pinName);
          ledPin.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
 
         } catch (IOException e) {
             Log.e("LedToggle", "Error on PeripheralIO API", e);
+        }
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("LedToggle", "Closing LED GPIO pin");
+        try {
+            ledPin.close();
+        } catch (IOException e) {
+            Log.e("LedToggle", "Error on PeripheralIO API", e);
+        } finally {
+            ledPin = null;
         }
     }
 }
